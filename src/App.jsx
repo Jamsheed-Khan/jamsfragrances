@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
+import Footer from "./Components/Footer";
 // import Products from "./Pages/Products";
 // import ProductDetails from "./Pages/ProductDetails";
 // import Cart from "./Pages/Cart";
@@ -15,6 +16,7 @@ function App() {
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} /> */}
       </Routes>
+      <Footer />
     </Router>
   );
 }

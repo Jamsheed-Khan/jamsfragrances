@@ -1,32 +1,37 @@
 import React, { useState } from "react";
-// Importing Menu and Close icons from react-icons
-import { MdMenu, MdClose } from "react-icons/md";
-// Import Link from react-router-dom
+import { MdMenu, MdClose, MdShoppingCart } from "react-icons/md";
 import { Link } from "react-router-dom";
 import jamsfrag from "../Assets/jamsfrag.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Function to toggle the mobile menu
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    // Disable scrolling on the body when the menu is open
+    if (!isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  };
+
   return (
-    <nav className="bg-white shadow-md py-4 px-6 md:px-12 flex justify-between items-center rounded-lg md:rounded-none">
-      {/* Logo (Image) */}
+    <nav className="bg-white shadow-md py-4 px-6 md:px-12 flex justify-between items-center rounded-lg md:rounded-none relative">
+      {/* Logo */}
       <div className="flex items-center">
         <Link to="/">
-          <img
-            src={jamsfrag} // Path to your logo image
-            alt="Logo"
-            className="h-12 md:h-16" // Increased logo height
-          />
+          <img src={jamsfrag} alt="Logo" className="h-12 md:h-16" />
         </Link>
       </div>
 
-      {/* Mobile Navbar - Hamburger and Login Button */}
+      {/* Mobile Menu Button */}
       <div className="md:hidden flex items-center space-x-4 ml-auto">
-        <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300">
-          Login
-        </button>
-        <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800">
+        <Link to="/cart" className="text-gray-800">
+          <MdShoppingCart className="h-6 w-6" />
+        </Link>
+        <button onClick={toggleMenu} className="text-gray-800">
           {isOpen ? (
             <MdClose className="h-7 w-7" />
           ) : (
@@ -37,55 +42,67 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <ul
-        className={`md:flex items-center space-x-8 text-gray-800 font-medium absolute md:static w-full md:w-auto bg-white md:bg-transparent top-16 left-0 md:left-auto md:space-x-8 transition-transform duration-300 ease-in-out ${
+        className={`md:flex items-center md:space-x-8 text-gray-800 font-medium absolute md:static w-full md:w-auto bg-white md:bg-transparent top-0 md:top-auto left-0 md:left-auto transition-transform duration-300 ease-in-out ${
           isOpen
-            ? "flex flex-col items-center space-y-4 mt-4 absolute right-0 top-0 w-2/3 h-full bg-white shadow-lg transform translate-x-0"
-            : "transform translate-x-full"
+            ? "flex flex-col items-center space-y-6 mt-20 bg-white shadow-lg py-6 md:py-0 w-2/3 h-screen fixed top-0 left-0 z-50"
+            : "transform translate-x-full md:translate-x-0"
         }`}
       >
-        <li className="relative group">
+        <li>
           <Link
             to="/"
             className="hover:text-green-600 transition-colors duration-200 py-2"
-            onClick={() => setIsOpen(false)} // Close menu on link click
+            onClick={() => setIsOpen(false)}
           >
             Home
           </Link>
-          <div className="absolute left-0 bottom-0 w-full h-[2px] bg-green-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
         </li>
-        <li className="py-2">
+        <li>
           <Link
             to="/about"
-            className="hover:text-green-600 transition-colors duration-200"
-            onClick={() => setIsOpen(false)} // Close menu on link click
+            className="hover:text-green-600 transition-colors duration-200 py-2"
+            onClick={() => setIsOpen(false)}
           >
             About
           </Link>
         </li>
-        <li className="py-2">
+        <li>
           <Link
             to="/services"
-            className="hover:text-green-600 transition-colors duration-200"
-            onClick={() => setIsOpen(false)} // Close menu on link click
+            className="hover:text-green-600 transition-colors duration-200 py-2"
+            onClick={() => setIsOpen(false)}
           >
             Services
           </Link>
         </li>
-        <li className="py-2">
+        <li>
           <Link
             to="/contact"
-            className="hover:text-green-600 transition-colors duration-200"
-            onClick={() => setIsOpen(false)} // Close menu on link click
+            className="hover:text-green-600 transition-colors duration-200 py-2"
+            onClick={() => setIsOpen(false)}
           >
             Contact
           </Link>
         </li>
+        <li className="md:hidden">
+          <button
+            className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
+            onClick={() => setIsOpen(false)}
+          >
+            Login
+          </button>
+        </li>
       </ul>
 
-      {/* Login Button (visible on desktop screens only) */}
-      <button className="hidden md:block bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300">
-        Login
-      </button>
+      {/* Right Section (Desktop Only) */}
+      <div className="hidden md:flex items-center space-x-4">
+        <Link to="/cart" className="text-gray-800">
+          <MdShoppingCart className="h-7 w-7" />
+        </Link>
+        <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300">
+          Login
+        </button>
+      </div>
     </nav>
   );
 };
