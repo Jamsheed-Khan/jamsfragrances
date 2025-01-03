@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { PuffLoader } from "react-spinners";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { toast } from "react-toastify";
 import "swiper/css";
 import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import jamsfragrance1 from "../Assets/jamsfragrance1.jpg";
 import jamsfragrance2 from "../Assets/jamsfragrance2.jpg";
 import jamsfragrance3 from "../Assets/jamsfragrance3.jpg";
@@ -15,6 +17,7 @@ import jamsfragrance4 from "../Assets/jamsfragrance4.jpg";
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize navigate
 
   const adImages = [jamsfragrance1, jamsfragrance2, jamsfragrance3, jamsfragrance4];
 
@@ -35,6 +38,41 @@ const Home = () => {
     };
     fetchProducts();
   }, []);
+
+  const handleAddToCart  = async (product) => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      toast.error("Please log in to add items to your cart.", {
+        onClose: () => {
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+        },
+      });
+      return;
+    }
+
+    try {
+      const cartRef = collection(db, "users", user.uid, "cart");
+      await addDoc(cartRef, {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        quantity: 1,
+        addedAt: new Date(),
+      });
+      toast.success(`${product.name} added to cart!`);
+    } catch (err) {
+      toast.error("Failed to add item to cart. Please try again.");
+    }
+  };
+
+  const handleShopNow = (product) => {
+    navigate("/orderpage", { state: { product } });
+  };
 
   return (
     <div className="container mx-auto px-4">
@@ -70,47 +108,43 @@ const Home = () => {
 
           <motion.div
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16"
           >
             {products.map((product) => (
               <motion.div
                 key={product.id}
-                className="relative bg-gradient-to-r from-pink-500 to-orange-400 rounded-2xl shadow-lg p-6 text-center transition-transform duration-500 hover:scale-105"
-                whileHover={{ scale: 1.1 }}
+                className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8"
+                whileHover={{ scale: 1.05 }}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
               >
-                {/* Product Image */}
-                <div className="flex justify-center items-center mb-4">
-                  <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
+                />
+                <h2 className="text-white text-lg font-bold mt-6">{product.name}</h2>
+                <p className="text-white text-sm">{product.description}</p>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
+                    ${product.price}
+                  </span>
                 </div>
-
-                {/* Product Name */}
-                <h2 className="text-lg md:text-xl font-extrabold text-white mb-2">
-                  {product.name}
-                </h2>
-
-                {/* Product Description */}
-                <p className="text-xs md:text-sm text-white mb-4">
-                  {product.description}
-                </p>
-
-                {/* Price Tag */}
-                <div className="absolute top-4 right-4 bg-yellow-400 text-black font-bold px-3 py-1 rounded-full shadow">
-                  ${product.price}
+                <div className="flex justify-between mt-4">
+                  <button
+                    className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600"
+                    onClick={() => handleShopNow(product)}
+                  >
+                    Shop Now
+                  </button>
                 </div>
-
-                {/* Shop Now Button */}
-                <button className="mt-4 px-6 py-2 bg-black text-white text-sm font-semibold rounded-full shadow hover:bg-gray-800">
-                  Shop Now
-                </button>
               </motion.div>
             ))}
           </motion.div>
