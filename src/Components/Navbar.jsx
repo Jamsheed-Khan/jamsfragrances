@@ -168,7 +168,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <main className="mt-28">
+      <main className="mt-32">
       
     </main>
     </>

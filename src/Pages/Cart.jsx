@@ -71,6 +71,11 @@ const Cart = () => {
     }
   };
 
+  const handleOrder = (item) => {
+    // Handle order logic here (e.g., updating database, showing confirmation)
+    alert(`Ordered ${item.name}`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-6">Shopping Cart</h1>
@@ -92,6 +97,7 @@ const Cart = () => {
                 <th className="p-3 border">Price</th>
                 <th className="p-3 border">Quantity</th>
                 <th className="p-3 border">Total</th>
+                <th className="p-3 border">Order</th> {/* New column for the Order button */}
               </tr>
             </thead>
             <tbody>
@@ -136,6 +142,14 @@ const Cart = () => {
                   <td className="p-3 border">
                     ${(item.price * item.quantity).toFixed(2)}
                   </td>
+                  <td className="p-3 border">
+                    <button
+                      onClick={() => handleOrder(item)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Order
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -153,7 +167,7 @@ const Cart = () => {
                   className="flex-1 border p-2 mr-2"
                   placeholder="Coupon Code"
                 />
-                <button className="bg-primary text-black px-4 py-2">
+                <button className="bg-gradient-to-br from-pink-400 to-red-400 border text-black px-4 py-2">
                   APPLY COUPON
                 </button>
               </div>
@@ -173,7 +187,7 @@ const Cart = () => {
                 <span>Total</span>
                 <span>${(calculateTotal() + 50).toFixed(2)}</span>
               </div>
-              <button className="bg-primary text-white w-full mt-4 py-2">
+              <button className="bg-gradient-to-br from-pink-400 to-red-400 border text-black w-full mt-4 py-2">
                 PROCEED TO CHECKOUT
               </button>
             </div>
