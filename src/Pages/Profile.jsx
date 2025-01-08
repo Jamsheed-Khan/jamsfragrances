@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { getAuth, updateProfile, updatePassword } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, onSnapshot } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { toast } from "react-toastify";  // Import toast for notifications
+import { PuffLoader } from "react-spinners";  // Import PuffLoader for image loading spinner
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -10,7 +12,8 @@ const ProfilePage = () => {
   const [password, setPassword] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // Loader state
+  const [isUploading, setIsUploading] = useState(false); // Loader state for image upload
+  const [isImageLoading, setIsImageLoading] = useState(true); // State for image loading spinner
   const auth = getAuth();
   const db = getFirestore();
 
@@ -85,20 +88,20 @@ const ProfilePage = () => {
       });
 
       setIsEditing(false);
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile!");
+      toast.error("Failed to update profile!");
     }
   };
 
   const handlePasswordChange = async () => {
     try {
       await updatePassword(user, password);
-      alert("Password updated successfully!");
+      toast.success("Password updated successfully!");
     } catch (error) {
       console.error("Error updating password:", error);
-      alert("Failed to update password!");
+      toast.error("Failed to update password!");
     }
   };
 
@@ -118,6 +121,13 @@ const ProfilePage = () => {
     setIsUploading(false); // Stop the loader
   };
 
+  // Handle profile image loading spinner
+  useEffect(() => {
+    if (profilePicture) {
+      setIsImageLoading(false); // Set the image as loaded when the URL is set
+    }
+  }, [profilePicture]);
+
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
@@ -127,11 +137,17 @@ const ProfilePage = () => {
         <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 mb-6">
           {/* Profile Picture */}
           <div className="relative">
-            <img
-              src={profilePicture || "https://via.placeholder.com/150"}
-              alt="Profile"
-              className="h-32 w-32 rounded-full object-cover border border-gray-300"
-            />
+            {isImageLoading ? (
+              <div className="absolute inset-0 flex justify-center items-center bg-opacity-50 bg-gray-800 rounded-full">
+                <PuffLoader color="#ffffff" size={50} />
+              </div>
+            ) : (
+              <img
+                src={profilePicture || "https://via.placeholder.com/150"}
+                alt="Profile"
+                className="h-32 w-32 rounded-full object-cover border border-gray-300"
+              />
+            )}
             <label
               htmlFor="fileInput"
               className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer"
@@ -146,15 +162,6 @@ const ProfilePage = () => {
               onChange={handleFileUpload}
             />
           </div>
-
-          {/* Loader for Profile Picture Update */}
-          {isUploading && (
-            <div className="absolute inset-0 flex justify-center items-center bg-opacity-50 bg-gray-800 rounded-full">
-              <div className="spinner-border text-white" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          )}
 
           {/* Profile Info */}
           <div className="flex-1">

@@ -13,6 +13,7 @@ import jamsfragrance1 from "../Assets/jamsfragrance1.jpg";
 import jamsfragrance2 from "../Assets/jamsfragrance2.jpg";
 import jamsfragrance3 from "../Assets/jamsfragrance3.jpg";
 import jamsfragrance4 from "../Assets/jamsfragrance4.jpg";
+import 'react-toastify/dist/ReactToastify.css'; // Import the styles for react-toastify
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -37,6 +38,25 @@ const Home = () => {
       }
     };
     fetchProducts();
+
+    // Display notification when the page is loaded or refreshed
+    toast.info("This website is in the pre-launch period. Stay tuned for the official launch!", {
+      position: "top-center",
+      autoClose: 5000, // Toast stays for 5 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: {
+        background: "#1d4ed8", // Blue background color
+        color: "white",
+        fontSize: "18px",
+        fontWeight: "bold",
+        borderRadius: "8px",
+      },
+      icon: "🛍️", // Optional custom icon
+    });
   }, []);
 
   const handleAddToCart = async (product) => {
@@ -73,10 +93,10 @@ const Home = () => {
   const handleShopNow = (product) => {
     navigate(`/orderpage/${product.id}`);
   };
+  
   const handleCardClick = (product) => {
     navigate(`/productdetails/${product.id}`);
   };
-  
 
   return (
     <div className="container mx-auto px-4">
@@ -88,14 +108,16 @@ const Home = () => {
         <>
           <Swiper
             modules={[Autoplay]}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }} // Slower autoplay delay
             loop={true}
+            effect="slide" // Ensures smooth sliding effect
+            speed={1500} // Adjust the transition speed to make it slower (1500ms = 1.5s)
             className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] rounded-lg overflow-hidden"
           >
             {adImages.map((image, index) => (
               <SwiperSlide key={index}>
                 <motion.div
-                  className="h-full w-full"
+                  className="h-full w-full flex justify-center items-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -103,14 +125,14 @@ const Home = () => {
                   <img
                     src={image}
                     alt={`Ad ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain" // Use object-contain to show full image without cropping
                   />
                 </motion.div>
               </SwiperSlide>
             ))}
           </Swiper>
 
-          <motion.div 
+          <motion.div
             layout
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16"
           >
@@ -130,12 +152,24 @@ const Home = () => {
                   className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
                 />
                 <h2 className="text-black text-lg font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
-                <p className="text-white text-sm" style={{ fontFamily: 'Permanent Maker, cursive' }}>{product.description}</p>
+                <p className="text-white text-sm" style={{ fontFamily: 'Permanent Marker, cursive' }}>{product.description}</p>
+                
                 <div className="flex justify-between items-center mt-4">
-                  <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
-                    ${product.price}
-                  </span>
+                  {/* Display original price with strikethrough and discounted price */}
+                  {product.discount ? (
+                    <>
+                      <span className="text-gray-500 line-through">${product.price}</span> {/* Original price */}
+                      <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
+                        ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
+                      </span> {/* Discounted price */}
+                    </>
+                  ) : (
+                    <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
+                      ${product.price}
+                    </span> // If no discount, show the original price
+                  )}
                 </div>
+
                 <div className="flex justify-between mt-4">
                   <button
                     className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
