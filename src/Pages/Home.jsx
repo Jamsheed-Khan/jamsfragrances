@@ -112,7 +112,7 @@ const Home = () => {
             loop={true}
             effect="slide" // Ensures smooth sliding effect
             speed={1500} // Adjust the transition speed to make it slower (1500ms = 1.5s)
-            className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] rounded-lg overflow-hidden"
+            className="w-full h-[50vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] rounded-lg overflow-hidden"
           >
             {adImages.map((image, index) => (
               <SwiperSlide key={index}>
@@ -134,63 +134,73 @@ const Home = () => {
 
           <motion.div
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 mt-12"
           >
             {products.map((product) => (
               <motion.div
-                key={product.id}
-                className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8 cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => handleCardClick(product)}
+              key={product.id}
+              className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8 cursor-pointer flex flex-col justify-between h-full"
+              whileHover={{ scale: 1.05 }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => handleCardClick(product)}
+            >
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
+              />
+              
+              <h2 className="text-black text-xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
+              
+              {/* Limited description to 2 lines */}
+              <p
+                className="text-white text-sm overflow-hidden line-clamp-2 mt-2"
+                style={{ fontFamily: 'Permanent Marker, cursive' }}
               >
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
-                />
-                <h2 className="text-black text-lg font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
-                <p className="text-white text-sm" style={{ fontFamily: 'Permanent Marker, cursive' }}>{product.description}</p>
-                
-                <div className="flex justify-between items-center mt-4">
-                  {/* Display original price with strikethrough and discounted price */}
-                  {product.discount ? (
-                    <>
-                      <span className="text-gray-500 line-through">${product.price}</span> {/* Original price */}
-                      <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
-                        ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
-                      </span> {/* Discounted price */}
-                    </>
-                  ) : (
+                {product.description}
+              </p>
+            
+              <div className="flex justify-between items-center mt-4">
+                {/* Display original price with strikethrough and discounted price */}
+                {product.discount ? (
+                  <>
+                    <span className="text-gray-500 line-through">${product.price}</span> {/* Original price */}
                     <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
-                      ${product.price}
-                    </span> // If no discount, show the original price
-                  )}
-                </div>
-
-                <div className="flex justify-between mt-4">
-                  <button
-                    className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(product);
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShopNow(product);
-                    }}
-                  >
-                    Shop Now
-                  </button>
-                </div>
-              </motion.div>
+                      ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
+                    </span> {/* Discounted price */}
+                  </>
+                ) : (
+                  <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
+                    ${product.price}
+                  </span> // If no discount, show the original price
+                )}
+              </div>
+            
+              {/* Fixed position buttons */}
+              <div className="flex justify-between mt-auto">
+                <button
+                  className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }}
+                >
+                  Add to Cart
+                </button>
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShopNow(product);
+                  }}
+                >
+                  Shop Now
+                </button>
+              </div>
+            </motion.div>
+            
             ))}
           </motion.div>
         </>
