@@ -129,8 +129,8 @@ const Home = () => {
                   alt={product.name}
                   className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
                 />
-                <h2 className="text-white text-lg font-bold mt-6">{product.name}</h2>
-                <p className="text-white text-sm">{product.description}</p>
+                <h2 className="text-black text-lg font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
+                <p className="text-white text-sm" style={{ fontFamily: 'Permanent Maker, cursive' }}>{product.description}</p>
                 <div className="flex justify-between items-center mt-4">
                   <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
                     ${product.price}

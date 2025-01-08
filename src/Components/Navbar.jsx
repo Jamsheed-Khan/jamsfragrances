@@ -107,7 +107,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => navigate("/")}
-              className="hover:text-gray-500 transition-colors duration-200 py-2"
+              className="hover:text-gray-500 transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
             >
               Home
             </button>
@@ -115,7 +115,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => navigate("/about")}
-              className="hover:text-gray-500 transition-colors duration-200 py-2"
+              className="hover:text-gray-500 transition-colors duration-200 py-2 " style={{ fontFamily: 'Permanent Maker, cursive' }}
             >
               About
             </button>
@@ -123,7 +123,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => navigate("/services")}
-              className="hover:text-gray-500 transition-colors duration-200 py-2"
+              className="hover:text-gray-500 transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
             >
               Services
             </button>
@@ -131,7 +131,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => navigate("/contact")}
-              className="hover:text-gray-500 transition-colors duration-200 py-2"
+              className="hover:text-gray-500 transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
             >
               Contact
             </button>
@@ -140,7 +140,7 @@ const Navbar = () => {
             {user ? (
               isOnProfilePage ? (
                 <button
-                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
+                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
                   onClick={handleLogout}
                 >
                   Logout
@@ -155,7 +155,7 @@ const Navbar = () => {
               )
             ) : (
               <button
-                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
+                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
                 onClick={() => navigate("/login")}
               >
                 Login
@@ -192,7 +192,7 @@ const Navbar = () => {
             )
           ) : (
             <button
-              className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
+              className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
               onClick={() => navigate("/login")}
             >
               Login
