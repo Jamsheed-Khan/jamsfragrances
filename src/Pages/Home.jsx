@@ -39,7 +39,7 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const handleAddToCart  = async (product) => {
+  const handleAddToCart = async (product) => {
     const user = auth.currentUser;
 
     if (!user) {
@@ -71,8 +71,12 @@ const Home = () => {
   };
 
   const handleShopNow = (product) => {
-    navigate("/orderpage", { state: { product } });
+    navigate(`/orderpage/${product.id}`);
   };
+  const handleCardClick = (product) => {
+    navigate(`/productdetails/${product.id}`);
+  };
+  
 
   return (
     <div className="container mx-auto px-4">
@@ -106,18 +110,19 @@ const Home = () => {
             ))}
           </Swiper>
 
-          <motion.div
+          <motion.div 
             layout
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-16"
           >
             {products.map((product) => (
               <motion.div
                 key={product.id}
-                className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8"
+                className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
+                onClick={() => handleCardClick(product)}
               >
                 <img
                   src={product.imageUrl}
@@ -134,13 +139,19 @@ const Home = () => {
                 <div className="flex justify-between mt-4">
                   <button
                     className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
-                    onClick={() => handleAddToCart(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(product);
+                    }}
                   >
                     Add to Cart
                   </button>
                   <button
                     className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600"
-                    onClick={() => handleShopNow(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShopNow(product);
+                    }}
                   >
                     Shop Now
                   </button>
