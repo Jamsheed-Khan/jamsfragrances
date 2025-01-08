@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig"; // Ensure your Firebase is configured correctly
-
+import { db } from "../firebaseConfig"; 
 const ProductCard = () => {
   const [products, setProducts] = useState([]);
 

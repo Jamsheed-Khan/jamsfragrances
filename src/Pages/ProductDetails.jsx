@@ -71,7 +71,7 @@ const ProductDetails = () => {
               <span key={i}>&#9733;</span>
             ))}
           </div>
-          <p className="text-gray-500">{product.ratingsCount || 0} Ratings</p>
+          <p className="text-gray-500">{product.ratingsCount || 5} Ratings</p>
         </div>
         <p className="text-red-500 text-xl font-bold">Rs. {product.price}</p>
         <p className="line-through text-gray-500">

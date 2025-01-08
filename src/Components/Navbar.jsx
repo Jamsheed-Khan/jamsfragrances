@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MdMenu, MdClose, MdShoppingCart } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, onSnapshot } from "firebase/firestore";
-import jamsfrag from "../Assets/jamsfrag.png";
+import { getFirestore, collection, doc, getDoc, query, onSnapshot } from "firebase/firestore";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = getAuth();
   const db = getFirestore();
-  const userId = auth.currentUser?.uid;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -22,9 +22,23 @@ const Navbar = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+
+      if (currentUser) {
+        const fetchUserProfile = async () => {
+          const userDoc = doc(db, "users", currentUser.uid);
+          const userSnap = await getDoc(userDoc);
+          if (userSnap.exists()) {
+            setProfilePicture(userSnap.data().profilePicture || null);
+          }
+        };
+        fetchUserProfile();
+      } else {
+        setProfilePicture(null);
+      }
     });
+
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth, db]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -33,9 +47,9 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (!userId) return;
+    if (!user) return;
 
-    const cartRef = collection(db, "users", userId, "cart");
+    const cartRef = collection(db, "users", user.uid, "cart");
     const q = query(cartRef);
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -47,20 +61,24 @@ const Navbar = () => {
     });
 
     return () => unsubscribe(); // Clean up the listener when the component unmounts
-  }, [userId, db]);
+  }, [user, db]);
 
   const handleCartClick = () => {
     navigate("/cart"); // Navigate to the cart page directly
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile"); // Navigate to the profile page
+  };
+
+  const isOnProfilePage = location.pathname === "/profile";
+
   return (
     <>
       <nav className="bg-white py-4 px-6 md:px-12 flex justify-between items-center shadow-lg fixed top-0 w-full z-50">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/">
-            <img src={jamsfrag} alt="Logo" className="h-16 md:h-20" />
-          </Link>
+        {/* Name in Stylish Font */}
+        <div className="font-pacifico text-2xl md:text-3xl font-semibold text-gray-700">
+          <h2 onClick={() => navigate("/")}>JamsFragrances</h2>
         </div>
 
         {/* Mobile Menu and Cart */}
@@ -87,49 +105,54 @@ const Navbar = () => {
           }`}
         >
           <li>
-            <Link
-              to="/"
+            <button
+              onClick={() => navigate("/")}
               className="hover:text-gray-500 transition-colors duration-200 py-2"
-              onClick={() => setIsOpen(false)}
             >
               Home
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              to="/about"
+            <button
+              onClick={() => navigate("/about")}
               className="hover:text-gray-500 transition-colors duration-200 py-2"
-              onClick={() => setIsOpen(false)}
             >
               About
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              to="/services"
+            <button
+              onClick={() => navigate("/services")}
               className="hover:text-gray-500 transition-colors duration-200 py-2"
-              onClick={() => setIsOpen(false)}
             >
               Services
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              to="/contact"
+            <button
+              onClick={() => navigate("/contact")}
               className="hover:text-gray-500 transition-colors duration-200 py-2"
-              onClick={() => setIsOpen(false)}
             >
               Contact
-            </Link>
+            </button>
           </li>
           <li className="md:hidden">
             {user ? (
-              <button
-                className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+              isOnProfilePage ? (
+                <button
+                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              ) : (
+                <img
+                  src={profilePicture || "https://via.placeholder.com/50"}
+                  alt="Profile"
+                  className="h-10 w-10 rounded-full cursor-pointer"
+                  onClick={handleProfileClick}
+                />
+              )
             ) : (
               <button
                 className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
@@ -152,12 +175,21 @@ const Navbar = () => {
             )}
           </button>
           {user ? (
-            <button
-              className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            isOnProfilePage ? (
+              <button
+                className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            ) : (
+              <img
+                src={profilePicture || "https://via.placeholder.com/50"}
+                alt="Profile"
+                className="h-10 w-10 rounded-full cursor-pointer"
+                onClick={handleProfileClick}
+              />
+            )
           ) : (
             <button
               className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
@@ -168,9 +200,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <main className="mt-32">
-      
-    </main>
+      <main className="mt-32"></main>
     </>
   );
 };
