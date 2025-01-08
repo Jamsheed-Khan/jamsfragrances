@@ -200,7 +200,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <main className="mt-32"></main>
+      <main className="mt-24"></main>
     </>
   );
 };
