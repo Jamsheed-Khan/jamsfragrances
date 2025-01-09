@@ -156,7 +156,7 @@ const Home = () => {
               
               {/* Limited description to 2 lines */}
               <p
-                className="text-white text-xl overflow-hidden line-clamp-2 mt-2"
+                className="text-white text-lg overflow-hidden line-clamp-2 mt-2"
                 style={{ fontFamily: 'Permanent Marker, cursive' }}
               >
                 {product.description}
