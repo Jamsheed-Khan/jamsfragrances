@@ -152,11 +152,11 @@ const Home = () => {
                 className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
               />
               
-              <h2 className="text-black text-xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
+              <h2 className="text-black text-2xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
               
               {/* Limited description to 2 lines */}
               <p
-                className="text-white text-sm overflow-hidden line-clamp-2 mt-2"
+                className="text-white text-xl overflow-hidden line-clamp-2 mt-2"
                 style={{ fontFamily: 'Permanent Marker, cursive' }}
               >
                 {product.description}
