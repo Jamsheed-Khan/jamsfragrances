@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
+import { doc, getDoc, updateDoc, arrayUnion, onSnapshot, collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { useParams } from "react-router-dom";
+import { FaThumbsUp, FaRegComment, FaRegCommentAlt } from "react-icons/fa";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
-  const location = useLocation();
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [newReply, setNewReply] = useState({});
+  const [rating, setRating] = useState(0);
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false); // State to track if the product is liked
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -15,21 +21,93 @@ const ProductDetails = () => {
         try {
           const productRef = doc(db, "products", productId);
           const productSnap = await getDoc(productRef);
-  
           if (productSnap.exists()) {
             setProduct(productSnap.data());
-          } else {
-            console.error("No product found!");
           }
         } catch (error) {
           console.error("Error fetching product:", error);
         }
       }
     };
-  
     fetchProductDetails();
   }, [productId]);
-  
+
+  useEffect(() => {
+    if (productId) {
+      const commentsRef = collection(db, "products", productId, "comments");
+      const unsubscribe = onSnapshot(commentsRef, (snapshot) => {
+        const fetchedComments = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setComments(fetchedComments);
+      });
+
+      const productRef = doc(db, "products", productId);
+      const unsubscribeLikes = onSnapshot(productRef, (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          setLikes(data.likes || 0);
+          setRating(data.rating || 0);
+        }
+      });
+
+      return () => {
+        unsubscribe();
+        unsubscribeLikes();
+      };
+    }
+  }, [productId]);
+
+  const handleLikeProduct = async () => {
+    try {
+      const productRef = doc(db, "products", productId);
+      if (isLiked) {
+        await updateDoc(productRef, { likes: likes - 1 });
+        setLikes(likes - 1);
+      } else {
+        await updateDoc(productRef, { likes: likes + 1 });
+        setLikes(likes + 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error liking product:", error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (newComment.trim() === "") return;
+    try {
+      const commentsRef = collection(db, "products", productId, "comments");
+      await addDoc(commentsRef, { text: newComment, timestamp: Date.now(), replies: [] });
+      setNewComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const handleAddReply = async (commentId) => {
+    if (!newReply[commentId]?.trim()) return;
+    try {
+      const commentRef = doc(db, "products", productId, "comments", commentId);
+      await updateDoc(commentRef, {
+        replies: arrayUnion({ text: newReply[commentId], timestamp: Date.now() }),
+      });
+      setNewReply((prev) => ({ ...prev, [commentId]: "" }));
+    } catch (error) {
+      console.error("Error adding reply:", error);
+    }
+  };
+
+  const handleRatingChange = async (newRating) => {
+    try {
+      const productRef = doc(db, "products", productId);
+      await updateDoc(productRef, { rating: newRating });
+      setRating(newRating);
+    } catch (error) {
+      console.error("Error updating rating:", error);
+    }
+  };
 
   if (!product) {
     return (
@@ -41,7 +119,6 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 flex flex-col lg:flex-row gap-8">
-      {/* Left Section */}
       <div className="w-full lg:w-1/2">
         <div className="border p-2 rounded-lg">
           <img
@@ -61,31 +138,95 @@ const ProductDetails = () => {
           ))}
         </div>
       </div>
-
-      {/* Right Section */}
       <div className="w-full lg:w-1/2 space-y-4">
-        <h1 className="text-2xl font-bold">{product.name}</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{product.name}</h1>
         <div className="flex items-center gap-2">
           <div className="flex text-yellow-500">
-            {[...Array(product.rating || 5)].map((_, i) => (
+            {[...Array(Math.round(rating) || 5)].map((_, i) => (
               <span key={i}>&#9733;</span>
             ))}
           </div>
-          <p className="text-gray-500">{product.ratingsCount || 5} Ratings</p>
+          <p className="text-gray-500">{product.ratingsCount || 0} Ratings</p>
         </div>
         <p className="text-red-500 text-xl font-bold">Rs. {product.price}</p>
         <p className="line-through text-gray-500">
           Rs. {product.originalPrice || "N/A"}
         </p>
-        <p>{product.description}</p>
-
+        <p className="text-gray-700">{product.description}</p>
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <h2 className="text-lg font-bold text-gray-800">Full Details</h2>
+          <ul className="list-disc list-inside text-gray-600 space-y-2">
+            {product.details?.map((detail, index) => (
+              <li key={index}>{detail}</li>
+            ))}
+          </ul>
+        </div>
         <div className="flex gap-4">
-          <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            Buy Now
-          </button>
-          <button className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
-            Add to Cart
-          </button>
+          <div onClick={handleLikeProduct} className="flex items-center gap-2 cursor-pointer">
+            <FaThumbsUp
+              className={`text-${isLiked ? "red" : "black"}-500`}
+            />
+            <span className={`text-${isLiked ? "red" : "black"}-500`}>
+              Like ({likes})
+            </span>
+          </div>
+        </div>
+        <div className="mt-4">
+          <h2 className="text-lg font-bold">Rate this Product</h2>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                className={`cursor-pointer text-${star <= rating ? "yellow" : "gray"}-500`}
+                onClick={() => handleRatingChange(star)}
+              >
+                &#9733;
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 mt-4">
+          <h2 className="text-lg font-bold">Comments</h2>
+          <div className="space-y-2">
+            {comments.map((comment) => (
+              <div key={comment.id} className="bg-gray-100 p-2 rounded-lg">
+                <p>{comment.text}</p>
+                <div className="mt-2 space-y-2">
+                  {comment.replies?.map((reply, idx) => (
+                    <div key={idx} className="bg-gray-200 p-2 rounded-lg">
+                      {reply.text}
+                    </div>
+                  ))}
+                  <div className="flex gap-2 mt-2">
+                    <input
+                      type="text"
+                      className="border rounded-lg p-2 flex-1"
+                      placeholder="Add a reply"
+                      value={newReply[comment.id] || ""}
+                      onChange={(e) => setNewReply((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                    />
+                    <FaRegCommentAlt
+                      className="cursor-pointer text-blue-500"
+                      onClick={() => handleAddReply(comment.id)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              className="border rounded-lg p-2 flex-1"
+              placeholder="Add a comment"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <FaRegComment
+              className="cursor-pointer text-blue-500"
+              onClick={handleAddComment}
+            />
+          </div>
         </div>
       </div>
     </div>

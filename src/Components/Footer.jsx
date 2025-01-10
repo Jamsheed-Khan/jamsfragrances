@@ -17,24 +17,8 @@ const Footer = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white text-gray-700 w-full mt-auto">
-        {/* Top Section */}
-        <div className="text-center py-8 px-4">
-          <h3 className="text-lg font-bold uppercase mb-2 text-gray-800">Join Our Community</h3>
-          <p className="text-sm mb-4 text-gray-600">
-            We’re 700+ strong. Join us by entering your email address. We’ll be sending our stories.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-500 w-full sm:w-64"
-            />
-            <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300 w-full sm:w-auto">
-              Subscribe
-            </button>
-          </div>
-        </div>
+      <footer className="bg-white text-gray-700 w-full mt-8">
+       
 
         {/* Bottom Section */}
         <div className="bg-gray-800 text-center py-6">

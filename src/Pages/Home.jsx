@@ -21,6 +21,32 @@ const Home = () => {
   const navigate = useNavigate(); // Initialize navigate
 
   const adImages = [jamsfragrance1, jamsfragrance2, jamsfragrance3, jamsfragrance4];
+  const newproducts = [
+    {
+      id: 1,
+      name: "Diana - Impression of Delina",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Delina_Parfums_de_Marly_2ae1b267-dd75-4d6c-a941-69ce7c287071.jpg?v=1736313683&width=360",
+      originalPrice: "575.00",
+      discountedPrice: "460.00",
+      discount: "-20%",
+    },
+    {
+      id: 2,
+      name: "Tempting Bliss - Impression of Envy Me",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Tempting_Bliss_Envy_Me_30ml_ab9e1eaf-4f34-488c-85e2-0b95b853e0cc.png?v=1736313401&width=360",
+      originalPrice: "575.00",
+      discountedPrice: "460.00",
+      discount: "-20%",
+    },
+    {
+      id: 3,
+      name: "Majestic Veil - Impression of Tilia",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/30_ml_bottle_e5bafa70-2874-4c77-aace-23ef6750e507.png?v=1736313404&width=360",
+      originalPrice: "1050.00",
+      discountedPrice: "840.00",
+      discount: "-20%",
+    },
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -98,6 +124,12 @@ const Home = () => {
     navigate(`/productdetails/${product.id}`);
   };
 
+
+  const FeaturedCollections = ({ products }) => {
+    const navigate = useNavigate();
+  
+    
+    };
   return (
     <div className="container mx-auto px-4">
       {isLoading ? (
@@ -205,6 +237,112 @@ const Home = () => {
           </motion.div>
         </>
       )}
+      <motion.div
+      className="mt-16"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Title */}
+      <div className="text-center my-8">
+        <h2 className="text-3xl font-bold text-black">Featured Collections</h2>
+        <p className="text-gray-600">
+          The one's that deserve to be in your personal collection. <br />
+          Rated the best from all your love.
+        </p>
+      </div>
+
+      {/* Product Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-8">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            onClick={() => handleCardClick(product)}
+            className="flex flex-col items-center bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            {/* Product Image */}
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-64 object-cover rounded-lg"
+            />
+            
+            {/* Product Name */}
+            <h3 className="mt-4 text-lg font-bold text-black">{product.name}</h3>
+            
+            {/* Product Category */}
+            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
+
+            {/* Social Reaction Icons */}
+            <div className="flex justify-center items-center gap-4 mt-4">
+              <div className="flex items-center gap-1">
+                <span className="text-gray-600 text-sm">+{product.likes}</span>
+                <div className="w-6 h-6 rounded-full bg-gray-300"></div>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-6 h-6 rounded-full bg-gray-400"></div>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-6 h-6 rounded-full bg-gray-500"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+
+    <section className="py-12 bg-white">
+      {/* Section Header */}
+      <div className="container mx-auto px-4 text-center">
+        <h2 className="text-3xl font-bold text-black">New Arrivals</h2>
+        <a
+          href="/shop-all"
+          className="text-sm font-semibold text-black hover:underline mt-4 inline-block"
+        >
+          Shop All Products →
+        </a>
+      </div>
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 container mx-auto px-4">
+        {newproducts.map((product) => (
+          <div
+            key={product.id}
+            className="relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+          >
+            {/* Product Image */}
+            <div className="relative">
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full h-80 object-cover"
+              />
+              <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold py-1 px-2 rounded">
+                {product.discount}
+              </span>
+              <button className="absolute top-2 right-2 w-8 h-8 bg-white text-black rounded-full flex items-center justify-center shadow">
+                ♥
+              </button>
+            </div>
+
+            {/* Product Info */}
+            <div className="text-center py-4 px-2">
+              <h3 className="text-sm font-semibold text-gray-800">
+                {product.name}
+              </h3>
+              <div className="mt-2">
+                <span className="text-sm text-gray-400 line-through">
+                  Rs. {product.originalPrice}
+                </span>
+                <span className="text-sm font-bold text-red-600 ml-2">
+                  From Rs. {product.discountedPrice}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
     </div>
   );
 };
