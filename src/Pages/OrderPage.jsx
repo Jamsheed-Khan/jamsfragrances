@@ -181,147 +181,164 @@ const OrderPage = () => {
       </div>
       {/* Payment Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
-            <div className="flex gap-2 mb-4">
-              <button
-                className={`p-2 rounded ${
-                  paymentMethod === "debit" ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-                onClick={() => setPaymentMethod("debit")}
-              >
-                Debit/Credit Card
-              </button>
-              <button
-                className={`p-2 rounded ${
-                  paymentMethod === "easypaisa" ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-                onClick={() => setPaymentMethod("easypaisa")}
-              >
-                EasyPaisa
-              </button>
-              <button
-                className={`p-2 rounded ${
-                  paymentMethod === "jazzcash" ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-                onClick={() => setPaymentMethod("jazzcash")}
-              >
-                JazzCash
-              </button>
-              <button
-                className={`p-2 rounded ${
-                  paymentMethod === "cash" ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-                onClick={() => setPaymentMethod("cash")}
-              >
-                Cash on Delivery
-              </button>
-            </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg max-w-md w-full">
+      <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
+      
+      {/* Payment Method Buttons */}
+      <div className="flex flex-col gap-4 mb-4">
+        <button
+          className={`p-2 rounded ${
+            paymentMethod === "debit" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setPaymentMethod("debit")}
+        >
+          Debit/Credit Card
+        </button>
+        <button
+          className={`p-2 rounded ${
+            paymentMethod === "easypaisa" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setPaymentMethod("easypaisa")}
+        >
+          EasyPaisa
+        </button>
+        <button
+          className={`p-2 rounded ${
+            paymentMethod === "jazzcash" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setPaymentMethod("jazzcash")}
+        >
+          JazzCash
+        </button>
+        <button
+          className={`p-2 rounded ${
+            paymentMethod === "cash" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setPaymentMethod("cash")}
+        >
+          Cash on Delivery
+        </button>
+      </div>
 
-            {/* Payment Details */}
-            {paymentMethod === "debit" && (
-              <div className="grid gap-4">
-                <input
-                  type="text"
-                  name="cardHolder"
-                  placeholder="Card Holder Name"
-                  className="p-2 border rounded"
-                  onChange={handlePaymentChange}
-                />
-                <input
-                  type="text"
-                  name="cardNumber"
-                  placeholder="Card Number"
-                  className="p-2 border rounded"
-                  onChange={handlePaymentChange}
-                />
-                <input
-                  type="text"
-                  name="expiryDate"
-                  placeholder="Expiry Date (MM/YY)"
-                  className="p-2 border rounded"
-                  onChange={handlePaymentChange}
-                />
-                <input
-                  type="password"
-                  name="cvv"
-                  placeholder="CVV"
-                  className="p-2 border rounded"
-                  onChange={handlePaymentChange}
-                />
-              </div>
-            )}
-
-            {paymentMethod === "easypaisa" || paymentMethod === "jazzcash" ? (
-              <div className="grid gap-4">
-                <p>
-                  Send payment to <strong>Jamsheed Khan</strong> -{" "}
-                  <strong>03413675172</strong>
-                </p>
-                <input
-                  type="text"
-                  name="tid"
-                  placeholder="Transaction ID"
-                  className="p-2 border rounded"
-                  onChange={handlePaymentChange}
-                />
-                <input
-                  type="file"
-                  name="screenshot"
-                  accept="image/*"
-                  className="p-2 border rounded"
-                  onChange={(e) =>
-                    setPaymentDetails({
-                      ...paymentDetails,
-                      screenshot: e.target.files[0],
-                    })
-                  }
-                />
-              </div>
-            ) : null}
-
-            {paymentMethod === "cash" && (
-              <p className="text-sm">You can pay upon delivery.</p>
-            )}
-
-            <div className="mt-4 flex gap-2">
-              <button
-                className="bg-blue-500 text-white p-2 rounded w-full"
-                onClick={handlePaymentSubmit}
-              >
-                Confirm Order
-              </button>
-              <button
-                className="bg-red-500 text-white p-2 rounded w-full"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+      {/* Payment Details */}
+      {paymentMethod === "debit" && (
+        <div className="grid gap-4">
+          <input
+            type="text"
+            name="cardHolder"
+            placeholder="Card Holder Name"
+            className="p-2 border rounded"
+            onChange={handlePaymentChange}
+          />
+          <input
+            type="text"
+            name="cardNumber"
+            placeholder="Card Number"
+            className="p-2 border rounded"
+            onChange={handlePaymentChange}
+          />
+          <input
+            type="text"
+            name="expiryDate"
+            placeholder="Expiry Date (MM/YY)"
+            className="p-2 border rounded"
+            onChange={handlePaymentChange}
+          />
+          <input
+            type="password"
+            name="cvv"
+            placeholder="CVV"
+            className="p-2 border rounded"
+            onChange={handlePaymentChange}
+          />
         </div>
       )}
 
+      {paymentMethod === "easypaisa" || paymentMethod === "jazzcash" ? (
+        <div className="grid gap-4">
+          <p>
+            Send payment to <strong>Jamsheed Khan</strong> -{" "}
+            <strong>03413675172</strong>
+          </p>
+          <input
+            type="text"
+            name="tid"
+            placeholder="Transaction ID"
+            className="p-2 border rounded"
+            onChange={handlePaymentChange}
+          />
+          <input
+            type="file"
+            name="screenshot"
+            accept="image/*"
+            className="p-2 border rounded"
+            onChange={(e) =>
+              setPaymentDetails({
+                ...paymentDetails,
+                screenshot: e.target.files[0],
+              })
+            }
+          />
+        </div>
+      ) : null}
+
+      {paymentMethod === "cash" && (
+        <p className="text-sm">You can pay upon delivery.</p>
+      )}
+
+      <div className="mt-4 flex gap-2">
+        <button
+          className="bg-blue-500 text-white p-2 rounded w-full"
+          onClick={handlePaymentSubmit}
+        >
+          Confirm Order
+        </button>
+        <button
+          className="bg-red-500 text-white p-2 rounded w-full"
+          onClick={() => setIsModalOpen(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
       {/* Product Details */}
       <div className="bg-gray-100 shadow-md p-6 rounded-lg">
-        {selectedProduct ? (
-          <div>
-            <img
-              src={selectedProduct.image}
-              alt={selectedProduct.name}
-              className="w-full h-48 object-cover rounded mb-4"
-            />
-            <h3 className="text-lg font-bold mb-2">{selectedProduct.name}</h3>
-            <p className="text-sm mb-2">{selectedProduct.description}</p>
-            <p className="text-lg font-bold text-blue-500">
-              ${selectedProduct.price}
-            </p>
-          </div>
-        ) : (
-          <p>Loading product details...</p>
-        )}
+  {selectedProduct ? (
+    <div>
+      <div className="w-full h-48 overflow-hidden rounded mb-4">
+        <img
+          src={selectedProduct.imageUrl}
+          alt={selectedProduct.name}
+          className="w-full h-full object-contain"
+        />
       </div>
+      <h3 className="text-lg font-bold mb-2">{selectedProduct.name}</h3>
+      <p className="text-sm mb-2">{selectedProduct.description}</p>
+      <p className="text-lg font-bold text-blue-500 mb-2">
+        RS.{selectedProduct.price}
+      </p>
+      {selectedProduct.discount ? (
+        <p className="text-lg font-bold text-green-500">
+          Discounted Price: RS.
+          {(
+            selectedProduct.price -
+            (selectedProduct.price * selectedProduct.discount) / 100
+          ).toFixed(2)}
+        </p>
+      ) : (
+        <p className="text-sm text-gray-500">No discount available</p>
+      )}
+    </div>
+  ) : (
+    <p>Loading product details...</p>
+  )}
+</div>
+
     </div>
   );
 };

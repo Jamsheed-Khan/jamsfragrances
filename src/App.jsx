@@ -15,7 +15,7 @@ import ProfilePage from "./Pages/Profile";
 import OrderStatus from "./Pages/OrderStatus";
 import Category from "./Pages/Category";
 import ContactMe from "./Pages/Contact";
-// import About from "./Pages/About";
+import About from "./Pages/About";
 
 function App() {
   return (
@@ -33,7 +33,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />  
         <Route path="/profile" element={<ProfilePage />} />  
         <Route path="/contact" element={<ContactMe />} />  
-        {/* <Route path="/about" element={<About />} />   */}
+        <Route path="/about" element={<About />} />  
         <Route path="/category/:category" element={<Category />} /> 
         <Route path="/orderpage/:productId" element={<OrderPage />} />  
         <Route path="/orderstatus/:orderId" element={<OrderStatus />} />  
