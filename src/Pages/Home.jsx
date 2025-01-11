@@ -8,17 +8,17 @@ import { toast } from "react-toastify";
 import "swiper/css";
 import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import jamsfragrance1 from "../Assets/jamsfragrance1.jpg";
 import jamsfragrance2 from "../Assets/jamsfragrance2.jpg";
 import jamsfragrance3 from "../Assets/jamsfragrance3.jpg";
 import jamsfragrance4 from "../Assets/jamsfragrance4.jpg";
-import 'react-toastify/dist/ReactToastify.css'; // Import the styles for react-toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   const adImages = [jamsfragrance1, jamsfragrance2, jamsfragrance3, jamsfragrance4];
   const newproducts = [
@@ -47,6 +47,53 @@ const Home = () => {
       discount: "-20%",
     },
   ];
+  const featureproducts = [
+    {
+      id: 1,
+      name: "Dirty Linen",
+      category: "Male",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Male.jpg?v=1699016877&width=400", 
+      likes: 53,
+    },
+    {
+      id: 2,
+      name: "Miss Flora Top",
+      category: "Female",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Female.jpg?v=1699016878&width=400",
+      likes: 45,
+    },
+    {
+      id: 3,
+      name: "Magnificent Santal",
+      category: "Unisex",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Unisex.jpg?v=1699016877&width=400", 
+      likes: 145,
+    },
+  ];
+
+  const cards = [
+    {
+      id: 1,
+      title: "Explore a World of Scents",
+      description:
+        "Find the perfect scent in our diverse range of perfume collections, made with premium oils to suit every personality and occasion.",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/Chicfusion04.png?v=1736313430&width=400",
+    },
+    {
+      id: 2,
+      title: "Ancient Art, Modern Scent",
+      description:
+        "Crafted with the finest oils and rich ingredients, these elixirs blend tradition with modern scents, offering an olfactory experience.",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/DSC8955-2.jpg?v=1724315040&width=400", // Replace with actual image path
+    },
+    {
+      id: 3,
+      title: "The Art of Scented Candles",
+      description:
+        "Discover our hand-poured scented candles, crafted to enhance your ambience with rich, soothing fragrances for any occasion.",
+      imageUrl: "https://buyrawaha.com/cdn/shop/files/life_style_images_02.png?v=1724397806&width=400", // Replace with actual image path
+    },
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -65,23 +112,22 @@ const Home = () => {
     };
     fetchProducts();
 
-    // Display notification when the page is loaded or refreshed
     toast.info("This website is in the pre-launch period. Stay tuned for the official launch!", {
       position: "top-center",
-      autoClose: 5000, // Toast stays for 5 seconds
+      autoClose: 5000, 
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
       style: {
-        background: "#1d4ed8", // Blue background color
+        background: "#1d4ed8",
         color: "white",
         fontSize: "18px",
         fontWeight: "bold",
         borderRadius: "8px",
       },
-      icon: "🛍️", // Optional custom icon
+      icon: "🛍️", 
     });
   }, []);
 
@@ -140,10 +186,10 @@ const Home = () => {
         <>
           <Swiper
             modules={[Autoplay]}
-            autoplay={{ delay: 4000, disableOnInteraction: false }} // Slower autoplay delay
+            autoplay={{ delay: 4000, disableOnInteraction: false }} 
             loop={true}
-            effect="slide" // Ensures smooth sliding effect
-            speed={1500} // Adjust the transition speed to make it slower (1500ms = 1.5s)
+            effect="slide" 
+            speed={1500} 
             className="w-full h-[50vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] rounded-lg overflow-hidden"
           >
             {adImages.map((image, index) => (
@@ -157,7 +203,7 @@ const Home = () => {
                   <img
                     src={image}
                     alt={`Ad ${index + 1}`}
-                    className="w-full h-full object-contain" // Use object-contain to show full image without cropping
+                    className="w-full h-full object-contain" 
                   />
                 </motion.div>
               </SwiperSlide>
@@ -186,7 +232,7 @@ const Home = () => {
               
               <h2 className="text-black text-2xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
               
-              {/* Limited description to 2 lines */}
+            
               <p
                 className="text-white text-lg overflow-hidden line-clamp-2 mt-2"
                 style={{ fontFamily: 'Permanent Marker, cursive' }}
@@ -195,22 +241,22 @@ const Home = () => {
               </p>
             
               <div className="flex justify-between items-center mt-4">
-                {/* Display original price with strikethrough and discounted price */}
+                
                 {product.discount ? (
                   <>
-                    <span className="text-gray-500 line-through">${product.price}</span> {/* Original price */}
+                    <span className="text-gray-500 line-through">${product.price}</span>
                     <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
                       ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
-                    </span> {/* Discounted price */}
+                    </span> 
                   </>
                 ) : (
                   <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
                     ${product.price}
-                  </span> // If no discount, show the original price
+                  </span>
                 )}
               </div>
             
-              {/* Fixed position buttons */}
+           
               <div className="flex justify-between mt-auto">
                 <button
                   className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
@@ -237,54 +283,53 @@ const Home = () => {
           </motion.div>
         </>
       )}
-      <motion.div
+    <motion.div
       className="mt-16"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Title */}
-      <div className="text-center my-8">
-        <h2 className="text-3xl font-bold text-black">Featured Collections</h2>
-        <p className="text-gray-600">
+   
+      <div className="text-center my-12">
+        <h2 className="text-4xl font-bold text-black tracking-wide">
+          Featured Collections
+        </h2>
+        <p className="text-gray-500 mt-2">
           The one's that deserve to be in your personal collection. <br />
           Rated the best from all your love.
         </p>
+        <hr className="w-1/4 mx-auto mt-6 border-t-2 border-gray-300" />
       </div>
 
-      {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-8">
-        {products.map((product) => (
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-8 lg:px-16">
+        {featureproducts.map((product) => (
           <div
             key={product.id}
-            onClick={() => handleCardClick(product)}
-            className="flex flex-col items-center bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+            className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300"
           >
-            {/* Product Image */}
+        
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full h-64 object-cover rounded-lg"
+              className="w-full h-64 object-cover rounded-md"
             />
-            
-            {/* Product Name */}
-            <h3 className="mt-4 text-lg font-bold text-black">{product.name}</h3>
-            
-            {/* Product Category */}
-            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
 
-            {/* Social Reaction Icons */}
-            <div className="flex justify-center items-center gap-4 mt-4">
+           
+            <h3 className="mt-6 text-xl font-semibold text-gray-800">
+              {product.name}
+            </h3>
+
+           
+            <p className="mt-2 text-sm text-gray-500">{product.category}</p>
+
+            <div className="flex gap-2 items-center mt-4">
               <div className="flex items-center gap-1">
                 <span className="text-gray-600 text-sm">+{product.likes}</span>
-                <div className="w-6 h-6 rounded-full bg-gray-300"></div>
+                <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="w-6 h-6 rounded-full bg-gray-400"></div>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-6 h-6 rounded-full bg-gray-500"></div>
-              </div>
+              <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+              <div className="w-6 h-6 bg-gray-400 rounded-full"></div>
             </div>
           </div>
         ))}
@@ -292,7 +337,7 @@ const Home = () => {
     </motion.div>
 
     <section className="py-12 bg-white">
-      {/* Section Header */}
+      
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl font-bold text-black">New Arrivals</h2>
         <a
@@ -303,14 +348,14 @@ const Home = () => {
         </a>
       </div>
 
-      {/* Product Grid */}
+    
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 container mx-auto px-4">
         {newproducts.map((product) => (
           <div
             key={product.id}
             className="relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
           >
-            {/* Product Image */}
+           
             <div className="relative">
               <img
                 src={product.imageUrl}
@@ -325,7 +370,7 @@ const Home = () => {
               </button>
             </div>
 
-            {/* Product Info */}
+           
             <div className="text-center py-4 px-2">
               <h3 className="text-sm font-semibold text-gray-800">
                 {product.name}
@@ -343,7 +388,39 @@ const Home = () => {
         ))}
       </div>
     </section>
+
+    <div className="mt-16 bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 lg:px-16 py-12">
+        {cards.map((card) => (
+          <div
+            key={card.id}
+            className="flex flex-col items-center text-center bg-white"
+          >
+           
+            <img
+              src={card.imageUrl}
+              alt={card.title}
+              className="w-full h-64 object-cover rounded-md"
+            />
+
+            
+            <h3 className="mt-6 text-xl font-semibold text-gray-800">
+              {card.title}
+            </h3>
+
+           
+            <p className="mt-4 text-gray-600 text-sm">{card.description}</p>
+
+            
+            <button className="mt-6 text-blue-500 font-semibold hover:underline">
+              View All
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
+    </div>
+    
   );
 };
 

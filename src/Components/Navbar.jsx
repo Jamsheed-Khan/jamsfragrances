@@ -15,8 +15,11 @@ const Navbar = () => {
   const db = getFirestore();
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    document.body.style.overflow = isOpen ? "auto" : "hidden";
+    setIsOpen((prevState) => {
+      const newState = !prevState;
+      document.body.style.overflow = newState ? "hidden" : "auto";
+      return newState;
+    });
   };
 
   useEffect(() => {
@@ -60,16 +63,32 @@ const Navbar = () => {
       setCartItems(fetchedCartItems);
     });
 
-    return () => unsubscribe(); // Clean up the listener when the component unmounts
+    return () => unsubscribe();
   }, [user, db]);
 
   const handleCartClick = () => {
-    navigate("/cart"); // Navigate to the cart page directly
+    setIsOpen(false);
+    navigate("/cart");
   };
 
   const handleProfileClick = () => {
-    navigate("/profile"); // Navigate to the profile page
+    setIsOpen(false);
+    navigate("/profile");
   };
+ 
+
+  const handleNavigate = (path) => {
+    setIsOpen(false);
+    document.body.style.overflow = "auto"; // Reset overflow to allow scrolling
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "auto"; // Cleanup on component unmount
+    };
+  }, []);
 
   const isOnProfilePage = location.pathname === "/profile";
 
@@ -78,7 +97,7 @@ const Navbar = () => {
       <nav className="bg-white py-4 px-6 md:px-12 flex justify-between items-center shadow-lg fixed top-0 w-full z-50">
         {/* Name in Stylish Font */}
         <div className="font-pacifico text-2xl md:text-3xl font-semibold text-gray-700">
-          <h2 onClick={() => navigate("/")}>JamsFragrances</h2>
+          <h2 onClick={() => handleNavigate("/")}>JamsFragrances</h2>
         </div>
 
         {/* Mobile Menu and Cart */}
@@ -104,34 +123,49 @@ const Navbar = () => {
               : "hidden md:flex"
           }`}
         >
+          {/* Show Profile Picture at the Top in Mobile View */}
+          {user && (
+            <li className="w-full flex justify-center md:hidden mb-4">
+              <img
+                src={profilePicture || "https://via.placeholder.com/50"}
+                alt="Profile"
+                className="h-12 w-12 rounded-full cursor-pointer border-2 border-gray-300"
+                onClick={handleProfileClick}
+              />
+            </li>
+          )}
           <li>
             <button
-              onClick={() => navigate("/")}
-              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
+              onClick={() => handleNavigate("/")}
+              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2"
+              style={{ fontFamily: "Permanent Marker, cursive" }}
             >
               Home
             </button>
           </li>
           <li>
             <button
-              onClick={() => navigate("/about")}
-              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2 " style={{ fontFamily: 'Permanent Maker, cursive' }}
+              onClick={() => handleNavigate("/about")}
+              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2"
+              style={{ fontFamily: "Permanent Marker, cursive" }}
             >
               About
             </button>
           </li>
           <li>
             <button
-              onClick={() => navigate("/category/:category")}
-              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
+              onClick={() => handleNavigate("/category/:category")}
+              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2"
+              style={{ fontFamily: "Permanent Marker, cursive" }}
             >
               Category
             </button>
           </li>
           <li>
             <button
-              onClick={() => navigate("/contact")}
-              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2" style={{ fontFamily: 'Permanent Maker, cursive' }}
+              onClick={() => handleNavigate("/contact")}
+              className="hover:text-gray-500 text-lg transition-colors duration-200 py-2"
+              style={{ fontFamily: "Permanent Marker, cursive" }}
             >
               Contact
             </button>
@@ -140,27 +174,20 @@ const Navbar = () => {
             {user ? (
               isOnProfilePage ? (
                 <button
-                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
+                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300"
                   onClick={handleLogout}
                 >
                   Logout
                 </button>
               ) : (
-                <img
-                  src={profilePicture || "https://via.placeholder.com/50"}
-                  alt="Profile"
-                  className="h-10 w-10 rounded-full cursor-pointer"
+                <button
+                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300"
                   onClick={handleProfileClick}
-                />
+                >
+                  Profile
+                </button>
               )
-            ) : (
-              <button
-                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </button>
-            )}
+            ) : null}
           </li>
         </ul>
 
@@ -192,8 +219,8 @@ const Navbar = () => {
             )
           ) : (
             <button
-              className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300" style={{ fontFamily: 'Permanent Maker, cursive' }}
-              onClick={() => navigate("/login")}
+              className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
+              onClick={() => handleNavigate("/login")}
             >
               Login
             </button>
