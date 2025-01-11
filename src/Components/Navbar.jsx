@@ -75,7 +75,6 @@ const Navbar = () => {
     setIsOpen(false);
     navigate("/profile");
   };
- 
 
   const handleNavigate = (path) => {
     setIsOpen(false);
@@ -124,7 +123,7 @@ const Navbar = () => {
           }`}
         >
           {/* Show Profile Picture at the Top in Mobile View */}
-          {user && (
+          {user ? (
             <li className="w-full flex justify-center md:hidden mb-4">
               <img
                 src={profilePicture || "https://via.placeholder.com/50"}
@@ -132,6 +131,15 @@ const Navbar = () => {
                 className="h-12 w-12 rounded-full cursor-pointer border-2 border-gray-300"
                 onClick={handleProfileClick}
               />
+            </li>
+          ) : (
+            <li className="w-full flex justify-center md:hidden mb-4">
+              <button
+                onClick={() => handleNavigate("/login")}
+                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
+              >
+                Login
+              </button>
             </li>
           )}
           <li>

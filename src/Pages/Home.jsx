@@ -211,76 +211,75 @@ const Home = () => {
           </Swiper>
 
           <motion.div
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 mt-12"
-          >
-            {products.map((product) => (
-              <motion.div
-              key={product.id}
-              className="relative bg-gradient-to-br from-pink-400 to-red-400 rounded-xl p-6 shadow-lg mt-8 cursor-pointer flex flex-col justify-between h-full"
-              whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => handleCardClick(product)}
-            >
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full"
-              />
-              
-              <h2 className="text-black text-2xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>{product.name}</h2>
-              
-            
-              <p
-                className="text-white text-lg overflow-hidden line-clamp-2 mt-2"
-                style={{ fontFamily: 'Permanent Marker, cursive' }}
-              >
-                {product.description}
-              </p>
-            
-              <div className="flex justify-between items-center mt-4">
-                
-                {product.discount ? (
-                  <>
-                    <span className="text-gray-500 line-through">${product.price}</span>
-                    <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
-                      ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
-                    </span> 
-                  </>
-                ) : (
-                  <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg">
-                    ${product.price}
-                  </span>
-                )}
-              </div>
-            
-           
-              <div className="flex justify-between mt-auto">
-                <button
-                  className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAddToCart(product);
-                  }}
-                >
-                  Add to Cart
-                </button>
-                <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleShopNow(product);
-                  }}
-                >
-                  Shop Now
-                </button>
-              </div>
-            </motion.div>
-            
-            ))}
-          </motion.div>
+  layout
+  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 mt-12"
+>
+  {products.map((product) => (
+    <motion.div
+      key={product.id}
+      className="relative bg-gradient-to-br from-pink-500 via-red-400 to-red-500 rounded-xl p-6 shadow-2xl mt-8 cursor-pointer flex flex-col justify-between h-full"
+      whileHover={{ scale: 1.05 }}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      onClick={() => handleCardClick(product)}
+    >
+      <img
+        src={product.imageUrl}
+        alt={product.name}
+        className="w-40 h-40 object-contain mx-auto -mt-16 bg-white rounded-full shadow-md"
+      />
+      
+      <h2 className="text-white text-2xl font-bold mt-6" style={{ fontFamily: 'Spicy Rice, cursive' }}>
+        {product.name}
+      </h2>
+      
+      <p
+        className="text-white text-lg overflow-hidden line-clamp-2 mt-2"
+        style={{ fontFamily: 'Permanent Marker, cursive' }}
+      >
+        {product.description}
+      </p>
+      
+      <div className="flex justify-between items-center mt-4">
+        {product.discount ? (
+          <>
+            <span className="text-white text-sm line-through">${product.price}</span>
+            <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg shadow">
+              ${((product.price - (product.price * (product.discount / 100))).toFixed(2))}
+            </span>
+          </>
+        ) : (
+          <span className="bg-yellow-400 text-black font-bold py-1 px-3 rounded-lg shadow">
+            ${product.price}
+          </span>
+        )}
+      </div>
+      
+      <div className="flex justify-between mt-auto">
+        <button
+          className="bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800 shadow-lg"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddToCart(product);
+          }}
+        >
+          Add to Cart
+        </button>
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 shadow-lg"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleShopNow(product);
+          }}
+        >
+          Shop Now
+        </button>
+      </div>
+    </motion.div>
+  ))}
+</motion.div>
+
         </>
       )}
     <motion.div

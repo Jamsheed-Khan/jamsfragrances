@@ -96,12 +96,37 @@ const ProfilePage = () => {
   };
 
   const handlePasswordChange = async () => {
+    if (!password) {
+      toast.error("Please enter a new password.");
+      return;
+    }
+  
+    // Firebase has a minimum password length requirement
+    if (password.length < 6) {
+      toast.error("Password should be at least 6 characters long.");
+      return;
+    }
+  
     try {
+      // Update password in Firebase Authentication
       await updatePassword(user, password);
+  
+      // Optionally, you can reset the password field after successful change
+      setPassword("");
+  
       toast.success("Password updated successfully!");
     } catch (error) {
       console.error("Error updating password:", error);
-      toast.error("Failed to update password!");
+  
+      // Handle specific Firebase errors
+      if (error.code === "auth/weak-password") {
+        toast.error("The password is too weak. Please choose a stronger password.");
+      } else if (error.code === "auth/requires-recent-login") {
+        toast.error("You need to re-authenticate to change the password.");
+        // Prompt the user to re-sign in (e.g., force logout or prompt for re-login)
+      } else {
+        toast.error("Failed to update password. Please try again.");
+      }
     }
   };
 
