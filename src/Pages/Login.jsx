@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import { auth } from "../firebase"; // Your Firebase configuration
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const provider = new GoogleAuthProvider();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +27,11 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successful!");
-      navigate("/"); // Navigate to the home page or dashboard
+      if (email === "jamshedkh365@gmail.com") {
+        navigate("/admin"); // Navigate to the admin dashboard
+      } else {
+        navigate("/"); // Navigate to the home page or dashboard
+      }
     } catch (error) {
       if (error.code === "auth/user-not-found") {
         toast.error("User not found.");
@@ -31,6 +40,24 @@ const Login = () => {
       } else {
         toast.error("An error occurred. Please try again.");
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      toast.success("Login with Google successful!");
+      if (user.email === "jamshedkh365@gmail.com") {
+        navigate("/admin"); // Navigate to the admin dashboard
+      } else {
+        navigate("/"); // Navigate to the home page or dashboard
+      }
+    } catch (error) {
+      toast.error("Google login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -73,6 +100,15 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+        <button
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className={`w-full bg-blue-500 text-white py-2 rounded-md font-medium hover:bg-blue-600 transition duration-300 mt-4 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? "Loading..." : "Login with Google"}
+        </button>
         <div className="mt-4 text-center">
           <p className="text-gray-600">
             Don't have an account?{" "}

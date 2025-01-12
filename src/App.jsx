@@ -16,6 +16,7 @@ import OrderStatus from "./Pages/OrderStatus";
 import Category from "./Pages/Category";
 import ContactMe from "./Pages/Contact";
 import About from "./Pages/About";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />  
         <Route path="/contact" element={<ContactMe />} />  
         <Route path="/about" element={<About />} />  
+        <Route path="/admin" element={<AdminDashboard />} />  
         <Route path="/category/:category" element={<Category />} /> 
         <Route path="/orderpage/:productId" element={<OrderPage />} />  
         <Route path="/orderstatus/:orderId" element={<OrderStatus />} />  
