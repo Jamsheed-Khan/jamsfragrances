@@ -26,8 +26,10 @@ import {
   SearchOutlined,
   BellOutlined,
 } from "@ant-design/icons";
+import { Bar } from "react-chartjs-2";
 import { collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import "chart.js/auto";
 
 const { Header, Sider, Content } = Layout;
 
@@ -36,11 +38,10 @@ const AdminDashboard = () => {
   const [selectedMenu, setSelectedMenu] = useState("dashboard");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [stats, setStats] = useState({ sales: 0, revenue: 0, profit: 0 });
-  const [editingProduct, setEditingProduct] = useState(null); // For editing products
+  const [stats, setStats] = useState({ sales: 0, pending: 0, totalOrders: 0 });
+  const [editingProduct, setEditingProduct] = useState(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
 
-  // Fetch Products
   const fetchProducts = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "products"));
@@ -57,7 +58,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Fetch Orders
   const fetchOrders = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "orders"));
@@ -65,7 +65,12 @@ const AdminDashboard = () => {
         id: doc.id,
         ...doc.data(),
       }));
+
+      const totalSales = ordersData.reduce((sum, order) => sum + (order.total || 0), 0);
+      const pendingOrders = ordersData.filter((order) => order.status === "Pending").length;
+
       setOrders(ordersData);
+      setStats({ sales: totalSales, pending: pendingOrders, totalOrders: ordersData.length });
     } catch (error) {
       notification.error({
         message: "Error fetching orders",
@@ -79,7 +84,6 @@ const AdminDashboard = () => {
     fetchOrders();
   }, []);
 
-  // Handle Delete Product
   const handleDeleteProduct = async (id) => {
     try {
       await deleteDoc(doc(db, "products", id));
@@ -90,7 +94,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Handle Edit Product
   const handleEditProduct = (product) => {
     setEditingProduct(product);
     setEditModalVisible(true);
@@ -112,20 +115,37 @@ const AdminDashboard = () => {
     switch (selectedMenu) {
       case "dashboard":
         return (
-          <Row gutter={16}>
-            <Col span={8}>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} lg={8}>
               <Card>
                 <Statistic title="Total Sales" value={stats.sales} prefix="$" />
               </Card>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={12} lg={8}>
               <Card>
-                <Statistic title="Total Revenue" value={stats.revenue} prefix="$" />
+                <Statistic title="Pending Orders" value={stats.pending} />
               </Card>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={12} lg={8}>
               <Card>
-                <Statistic title="Total Profit" value={stats.profit} prefix="$" />
+                <Statistic title="Total Orders" value={stats.totalOrders} />
+              </Card>
+            </Col>
+            <Col xs={24}>
+              <Card>
+                <Bar
+                  data={{
+                    labels: ["Total Sales", "Pending Orders", "Total Orders"],
+                    datasets: [
+                      {
+                        label: "Stats",
+                        data: [stats.sales, stats.pending, stats.totalOrders],
+                        backgroundColor: ["#4caf50", "#ff9800", "#2196f3"],
+                      },
+                    ],
+                  }}
+                  options={{ responsive: true }}
+                />
               </Card>
             </Col>
           </Row>
@@ -137,7 +157,11 @@ const AdminDashboard = () => {
             rowKey="id"
             columns={[
               { title: "Name", dataIndex: "name" },
-              { title: "Image", dataIndex: "imageUrl", render: (url) => <img src={url} alt="Product" width={50} /> },
+              {
+                title: "Image",
+                dataIndex: "imageUrl",
+                render: (url) => <img src={url} alt="Product" style={{ width: 50 }} />,
+              },
               { title: "Description", dataIndex: "description" },
               { title: "Price", dataIndex: "price" },
               { title: "Discount", dataIndex: "discount" },
@@ -221,20 +245,14 @@ const AdminDashboard = () => {
         </Header>
         <Content style={{ margin: "16px", padding: 24, background: "#f0f2f5" }}>{renderContent()}</Content>
       </Layout>
-      {/* Edit Modal */}
       <Modal
         title="Edit Product"
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
-        onOk={() => setEditModalVisible(false)}
         footer={null}
       >
         {editingProduct && (
-          <Form
-            layout="vertical"
-            initialValues={editingProduct}
-            onFinish={handleSaveProduct}
-          >
+          <Form layout="vertical" initialValues={editingProduct} onFinish={handleSaveProduct}>
             <Form.Item label="Name" name="name">
               <AntInput />
             </Form.Item>
